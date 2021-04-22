@@ -9,32 +9,61 @@ class App extends React.Component {
     lastPressed: undefined,
     currentNumber: "0",
     prevNumber: undefined,
+    operation: undefined,
   };
 
   onClick = (e) => {
     const { innerText } = e.target,
-      { lastPressed, currentNumber, prevNumber } = this.state;
+      { currentNumber, prevNumber, operation } = this.state;
 
     if (!Number.isNaN(Number(innerText))) {
-      // if is not a number
+      // if is a number
       if (currentNumber === "0") {
         this.setState({ currentNumber: innerText });
       } else {
         this.setState({ currentNumber: currentNumber + innerText });
       }
+
+      return;
     }
 
     switch (innerText) {
       case "C":
-        this.setState({ currentNumber: "0", prevNumber: undefined });
+        this.setState({
+          currentNumber: "0",
+          prevNumber: undefined,
+          operation: undefined,
+        });
         break;
-    }
 
-    this.setState({ lastPressed: innerText });
+      case ".":
+        !currentNumber.includes(".") &&
+          this.setState({ currentNumber: currentNumber + "." });
+        break;
+
+      // in case i press an operator
+      default: {
+        if (!operation) {
+          this.setState({
+            operation: innerText,
+            prevNumber: currentNumber,
+            currentNumber: innerText,
+          });
+        } else {
+          // in case i have an operation
+          const evalued = eval(`${prevNumber} ${operation} ${currentNumber}`);
+          this.setState({
+            operation: innerText,
+            prevNumber: evalued,
+            currentNumber: innerText === "=" ? evalued : "0",
+          });
+        }
+      }
+    }
   };
 
   render() {
-    const { currentNumber } = this.state;
+    const { currentNumber: currentNumber } = this.state;
 
     return (
       <main>
