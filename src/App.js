@@ -2,23 +2,28 @@ import "./index.css";
 import React from "react";
 
 const nums = [7, 8, 9, 4, 5, 6, 1, 2, 3, 0],
-  ops = ["/", "x", "-", "+", "="];
+  ops = ["/", "*", "-", "+", "="],
+  opIds = ["divide", "multiply", "subtract", "add", "equals"];
 
 class App extends React.Component {
   state = {
-    lastPressed: undefined,
     currentNumber: "0",
-    prevNumber: undefined,
+    store: undefined,
     operation: undefined,
+    lastPressed: undefined,
   };
 
   onClick = (e) => {
     const { innerText } = e.target,
-      { currentNumber, prevNumber, operation } = this.state;
+      { currentNumber, store, operation } = this.state;
+
+    this.setState({ lastPressed: innerText });
 
     if (!Number.isNaN(Number(innerText))) {
       // if is a number
-      if (currentNumber === "0") {
+      if (currentNumber == "0") {
+        this.setState({ currentNumber: innerText });
+      } else if (ops.includes(lastPressed)) {
         this.setState({ currentNumber: innerText });
       } else {
         this.setState({ currentNumber: currentNumber + innerText });
@@ -31,7 +36,7 @@ class App extends React.Component {
       case "C":
         this.setState({
           currentNumber: "0",
-          prevNumber: undefined,
+          store: undefined,
           operation: undefined,
         });
         break;
@@ -41,21 +46,27 @@ class App extends React.Component {
           this.setState({ currentNumber: currentNumber + "." });
         break;
 
-      // in case i press an operator
+      // operations
       default: {
         if (!operation) {
           this.setState({
             operation: innerText,
-            prevNumber: currentNumber,
-            currentNumber: innerText,
+            store: currentNumber,
+            currentNumber: "",
+          });
+        } else if (innerText === "=") {
+          const evaluated = eval(`${store} ${operation} ${currentNumber}`);
+          this.setState({
+            operation: undefined,
+            store: evaluated,
+            currentNumber: evaluated,
           });
         } else {
-          // in case i have an operation
-          const evalued = eval(`${prevNumber} ${operation} ${currentNumber}`);
+          const evaluated = eval(`${store} ${operation} ${currentNumber}`);
           this.setState({
             operation: innerText,
-            prevNumber: evalued,
-            currentNumber: innerText === "=" ? evalued : "0",
+            store: evaluated,
+            currentNumber: evaluated,
           });
         }
       }
@@ -63,11 +74,14 @@ class App extends React.Component {
   };
 
   render() {
-    const { currentNumber: currentNumber } = this.state;
+    const { currentNumber, store, operation } = this.state;
 
     return (
       <main>
-        <header>{currentNumber}</header>
+        <small>
+          {store} {operation}
+        </small>
+        <header id="display">{currentNumber}</header>
         <div id="nums-container">
           <button id="clear" onClick={this.onClick}>
             C
@@ -76,6 +90,7 @@ class App extends React.Component {
             <button
               className={`number ${num === 0 && "big-h"}`}
               onClick={this.onClick}
+              key={num}
             >
               {num}
             </button>
@@ -86,7 +101,12 @@ class App extends React.Component {
         </div>
         <div id="ops-container">
           {ops.map((op) => (
-            <button className="operator" key={op} onClick={this.onClick}>
+            <button
+              id={`${opIds[ops.indexOf(op)]}`}
+              className={"operator"}
+              key={op}
+              onClick={this.onClick}
+            >
               {op}
             </button>
           ))}
