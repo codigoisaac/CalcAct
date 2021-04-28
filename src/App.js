@@ -14,73 +14,53 @@ class App extends React.Component {
   };
 
   onClick = (e) => {
-    const { innerText } = e.target,
-      { currentNumber, store, operation } = this.state;
-
-    this.setState({ lastPressed: innerText });
-
-    if (!Number.isNaN(Number(innerText))) {
-      // if is a number
-      if (currentNumber == "0") {
-        this.setState({ currentNumber: innerText });
-      } else if (ops.includes(lastPressed)) {
-        this.setState({ currentNumber: innerText });
-      } else {
-        this.setState({ currentNumber: currentNumber + innerText });
-      }
-
-      return;
-    }
+    const { store, currentNumber, lastPressed } = this.state,
+      { innerText } = e.target;
 
     switch (innerText) {
       case "C":
         this.setState({
           currentNumber: "0",
           store: undefined,
-          operation: undefined,
         });
         break;
 
-      case ".":
-        !currentNumber.includes(".") &&
-          this.setState({ currentNumber: currentNumber + "." });
+      case "=":
+        const evaluated = eval(store);
+        this.setState({ currentNumber: evaluated, store: evaluated });
         break;
 
-      // operations
-      default: {
-        if (!operation) {
-          this.setState({
-            operation: innerText,
-            store: currentNumber,
-            currentNumber: "",
-          });
-        } else if (innerText === "=") {
-          const evaluated = eval(`${store} ${operation} ${currentNumber}`);
-          this.setState({
-            operation: undefined,
-            store: evaluated,
-            currentNumber: evaluated,
-          });
+      default:
+        if (nums.includes(innerText)) {
+          // pressed a number
         } else {
-          const evaluated = eval(`${store} ${operation} ${currentNumber}`);
-          this.setState({
-            operation: innerText,
-            store: evaluated,
-            currentNumber: evaluated,
-          });
+          // pressed a operator
+          if (ops.includes(lastPressed)) {
+            // last pressed was already an operator
+            this.setState({
+              currentNumber: currentNumber.slice(0, -1),
+            });
+            alert("last = op");
+          } else {
+            // last pressed was a number
+          }
         }
-      }
+      // const actual =
+      //   currentNumber === "0" ? innerText : currentNumber + innerText;
+      // this.setState({
+      //   store: actual,
+      //   currentNumber: actual,
+      //   lastPressed: innerText,
+      // });
     }
   };
 
   render() {
-    const { currentNumber, store, operation } = this.state;
+    const { currentNumber, store } = this.state;
 
     return (
       <main>
-        <small>
-          {store} {operation}
-        </small>
+        <small>{store}</small>
         <header id="display">{currentNumber}</header>
         <div id="nums-container">
           <button id="clear" onClick={this.onClick}>
