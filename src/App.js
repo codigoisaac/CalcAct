@@ -59,11 +59,28 @@ class App extends React.Component {
           }
         } else {
           // pressed a operator
-          if (ops.includes(currentNumber.slice(-1))) {
+          const lastChar = currentNumber.slice(-1);
+
+          if (ops.includes(lastChar)) {
             // operator followed by operator
-            this.setState({
-              currentNumber: currentNumber.slice(0, -1) + innerText,
-            });
+            if (innerText === "-" && lastChar === "-") {
+              // subtract after subtract
+              if (currentNumber.charAt(currentNumber.length - 2) !== "-") {
+                // penult char is not subtract (not 3 subtracts in a row)
+                this.setState({ currentNumber: currentNumber + innerText });
+              }
+            } else {
+              if (lastChar === "-" && innerText !== "-") {
+                // last char is subtract but innertext is not
+                this.setState({
+                  currentNumber: currentNumber.slice(0, -2) + innerText,
+                });
+              } else {
+                this.setState({
+                  currentNumber: currentNumber.slice(0, -1) + innerText,
+                });
+              }
+            }
           } else {
             this.setState({ currentNumber: currentNumber + innerText });
           }
