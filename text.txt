@@ -1,7 +1,0 @@
-//todo: insert decimals between operators
-
-I can create a new state property that will hold the last number (the number after the last operator) and for each of this i can put one decimal point.
-
-But it must be more simple...
-
-Every time I hit an operator I enable the ability to add a decimal point, and every time I hit a decimal point I disable this ability.

@@ -70,26 +70,31 @@ class App extends React.Component {
           const lastChar = display.slice(-1);
 
           if (ops.includes(lastChar)) {
-            // operator followed by operator
+            // operator after operator
             if (innerText === "-" && lastChar === "-") {
               // subtract after subtract
               if (display.charAt(display.length - 2) !== "-") {
                 // penult char is not subtract (not 3 subtracts in a row)
                 this.setState({ display: display + innerText });
               }
+            } else if (lastChar === "-" && innerText !== "-") {
+              // other operator after subtract
+              this.setState({
+                display: display.slice(0, -2) + innerText,
+              });
+            } else if (lastChar !== "-" && innerText === "-") {
+              // subtract after other operator
+              this.setState({
+                display: display + innerText,
+              });
             } else {
-              if (lastChar === "-" && innerText !== "-") {
-                // last char is subtract but innertext is not
-                this.setState({
-                  display: display.slice(0, -2) + innerText,
-                });
-              } else {
-                this.setState({
-                  display: display.slice(0, -1) + innerText,
-                });
-              }
+              // non-subtract operator after non-subtract operator
+              this.setState({
+                display: display.slice(0, -1) + innerText,
+              });
             }
           } else {
+            // operator after number
             this.setState({ display: display + innerText });
           }
 
