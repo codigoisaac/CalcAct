@@ -19,71 +19,80 @@ const nums = [7, 8, 9, 4, 5, 6, 1, 2, 3, 0],
 
 class App extends React.Component {
   state = {
-    currentNumber: "0",
+    display: "0",
     showingResult: false,
+    canPutDecimal: true,
   };
 
   onClick = (e) => {
-    const { currentNumber, showingResult } = this.state,
+    const { display, showingResult, canPutDecimal } = this.state,
       { innerText } = e.target;
 
     switch (innerText) {
       case "C": {
         this.setState({
-          currentNumber: "0",
+          display: "0",
           showingResult: false,
+          canPutDecimal: true,
         });
         break;
       }
 
       case ".": {
-        if (!currentNumber.includes(".")) {
-          this.setState({ currentNumber: currentNumber + innerText });
+        if (canPutDecimal) {
+          this.setState({ display: display + innerText, canPutDecimal: false });
         }
         break;
       }
 
       case "=": {
-        const evaluated = eval(currentNumber).toString();
-        this.setState({ currentNumber: evaluated, showingResult: true });
+        const evaluated = eval(display).toString();
+        this.setState({
+          display: evaluated,
+          showingResult: true,
+          canPutDecimal: true,
+        });
         break;
       }
 
       default: {
         if (nums.includes(parseInt(innerText))) {
           // pressed a number
-          if (currentNumber === "0" || showingResult === true) {
-            this.setState({ currentNumber: innerText, showingResult: false });
+          if (display === "0" || showingResult === true) {
+            this.setState({ display: innerText, showingResult: false });
           } else {
-            this.setState({ currentNumber: currentNumber + innerText });
+            this.setState({ display: display + innerText });
           }
         } else {
           // pressed a operator
-          const lastChar = currentNumber.slice(-1);
+          this.setState({ canPutDecimal: true });
+
+          const lastChar = display.slice(-1);
 
           if (ops.includes(lastChar)) {
             // operator followed by operator
             if (innerText === "-" && lastChar === "-") {
               // subtract after subtract
-              if (currentNumber.charAt(currentNumber.length - 2) !== "-") {
+              if (display.charAt(display.length - 2) !== "-") {
                 // penult char is not subtract (not 3 subtracts in a row)
-                this.setState({ currentNumber: currentNumber + innerText });
+                this.setState({ display: display + innerText });
               }
             } else {
               if (lastChar === "-" && innerText !== "-") {
                 // last char is subtract but innertext is not
                 this.setState({
-                  currentNumber: currentNumber.slice(0, -2) + innerText,
+                  display: display.slice(0, -2) + innerText,
                 });
               } else {
                 this.setState({
-                  currentNumber: currentNumber.slice(0, -1) + innerText,
+                  display: display.slice(0, -1) + innerText,
                 });
               }
             }
           } else {
-            this.setState({ currentNumber: currentNumber + innerText });
+            this.setState({ display: display + innerText });
           }
+
           this.setState({ showingResult: false });
         }
       }
@@ -91,12 +100,12 @@ class App extends React.Component {
   };
 
   render() {
-    const { currentNumber, store } = this.state;
+    const { display, store } = this.state;
 
     return (
       <main>
         <small>{store}</small>
-        <header id="display">{currentNumber}</header>
+        <header id="display">{display}</header>
 
         <div id="nums-container">
           <button id="clear" onClick={this.onClick}>
