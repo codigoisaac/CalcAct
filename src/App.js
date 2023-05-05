@@ -1,5 +1,6 @@
-import "./index.css";
 import React from "react";
+
+import "./index.css";
 
 const nums = [7, 8, 9, 4, 5, 6, 1, 2, 3, 0],
   numIds = [
@@ -12,7 +13,7 @@ const nums = [7, 8, 9, 4, 5, 6, 1, 2, 3, 0],
     "one",
     "two",
     "three",
-    "zero",
+    "zero"
   ],
   ops = ["/", "*", "-", "+", "="],
   opIds = ["divide", "multiply", "subtract", "add", "equals"];
@@ -21,7 +22,7 @@ class App extends React.Component {
   state = {
     display: "0",
     showingResult: false,
-    canPutDecimal: true,
+    canPutDecimal: true
   };
 
   onClick = (e) => {
@@ -33,7 +34,7 @@ class App extends React.Component {
         this.setState({
           display: "0",
           showingResult: false,
-          canPutDecimal: true,
+          canPutDecimal: true
         });
         break;
       }
@@ -50,7 +51,7 @@ class App extends React.Component {
         this.setState({
           display: evaluated,
           showingResult: true,
-          canPutDecimal: true,
+          canPutDecimal: true
         });
         break;
       }
@@ -80,17 +81,17 @@ class App extends React.Component {
             } else if (lastChar === "-" && innerText !== "-") {
               // other operator after subtract
               this.setState({
-                display: display.slice(0, -2) + innerText,
+                display: display.slice(0, -2) + innerText
               });
             } else if (lastChar !== "-" && innerText === "-") {
               // subtract after other operator
               this.setState({
-                display: display + innerText,
+                display: display + innerText
               });
             } else {
               // non-subtract operator after non-subtract operator
               this.setState({
-                display: display.slice(0, -1) + innerText,
+                display: display.slice(0, -1) + innerText
               });
             }
           } else {
@@ -108,44 +109,58 @@ class App extends React.Component {
     const { display, store } = this.state;
 
     return (
-      <main>
-        <small>{store}</small>
-        <header id="display">{display}</header>
+      <>
+        <main>
+          <small>{store}</small>
+          <header id="display">{display}</header>
 
-        <div id="nums-container">
-          <button id="clear" onClick={this.onClick}>
-            C
-          </button>
-
-          {nums.map((num) => (
-            <button
-              className={`number${num === 0 ? " big-h" : ""}`}
-              onClick={this.onClick}
-              key={num}
-              id={numIds[nums.indexOf(num)]}
-            >
-              {num}
+          <div id="nums-container">
+            <button id="clear" onClick={this.onClick}>
+              C
             </button>
-          ))}
 
-          <button id="decimal" onClick={this.onClick}>
-            .
-          </button>
-        </div>
+            {nums.map((num) => (
+              <button
+                className={`number${num === 0 ? " big-h" : ""}`}
+                onClick={this.onClick}
+                key={num}
+                id={numIds[nums.indexOf(num)]}
+              >
+                {num}
+              </button>
+            ))}
 
-        <div id="ops-container">
-          {ops.map((op) => (
-            <button
-              id={`${opIds[ops.indexOf(op)]}`}
-              className={"operator"}
-              key={op}
-              onClick={this.onClick}
-            >
-              {op}
+            <button id="decimal" onClick={this.onClick}>
+              .
             </button>
-          ))}
+          </div>
+
+          <div id="ops-container">
+            {ops.map((op) => (
+              <button
+                id={`${opIds[ops.indexOf(op)]}`}
+                className={"operator"}
+                key={op}
+                onClick={this.onClick}
+              >
+                {op}
+              </button>
+            ))}
+          </div>
+        </main>
+
+        <div>
+          por{" "}
+          <a
+            href="https://campsite.bio/codigoisaac"
+            target="_blank"
+            rel="noreferrer"
+            style={{ color: "black" }}
+          >
+            codigoisaac
+          </a>
         </div>
-      </main>
+      </>
     );
   }
 }
