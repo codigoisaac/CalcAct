@@ -152,12 +152,12 @@ class App extends React.Component {
         <div>
           por{" "}
           <a
-            href="https://campsite.bio/codigoisaac"
+            href="https://isaacmuniz.vercel.app"
             target="_blank"
             rel="noreferrer"
             style={{ color: "black" }}
           >
-            codigoisaac
+            isaac
           </a>
         </div>
       </>
